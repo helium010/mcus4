@@ -1,0 +1,6 @@
+name I2C TRISE register
+
+address 0x40005400 + 0x20
+
+field TRISE 5:0 rw
+

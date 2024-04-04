@@ -1,0 +1,44 @@
+name Port configuration register low
+
+address 0x40010800
+
+address 0x40010C00 
+
+address 0x40011000
+
+address 0x40011400
+
+type rw
+
+field CNF7 31:30
+
+field CNF6 27:26
+ 
+field CNF5 23:22
+
+field CNF4 19:18
+
+field CNF3 15:14
+
+field CNF2 11:10
+
+field CNF1 7:6
+
+field CNF0 3:2
+
+
+field MODE7 29:28
+
+field MODE6 25:24
+
+field MODE5 21:20
+
+field MODE4 17:16
+
+field MODE3 13:12
+
+field MODE2 9:8
+
+field MODE1 5:4
+
+field MODE0 1:0 

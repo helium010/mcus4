@@ -1,0 +1,7 @@
+name NVIC_IPR5
+
+address 0xE000E400 + 0x14
+
+type rw
+
+field USB_LP_CAN1_RX0 7:4 

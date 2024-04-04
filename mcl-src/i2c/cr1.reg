@@ -1,0 +1,13 @@
+name I2C Control register 1
+
+address 0x40005400
+
+type rw
+
+field ACK 10
+
+field STOP 9
+
+field START 8
+
+field PE 0

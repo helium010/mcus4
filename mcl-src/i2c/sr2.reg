@@ -1,0 +1,11 @@
+name I2C Status register 2
+
+address 0x40005400 + 0x18
+
+type r
+
+field TRA 2
+
+field BUSY 1
+
+field MSL 0

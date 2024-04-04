@@ -1,0 +1,53 @@
+
+
+# enable flash prefetch
+flash.acr.PRFTBE = 1
+flash.acr.LATENCY = 2
+# set exception priority group
+scb.aircr.PRIGROUP = 0b011
+
+# config clocks
+
+# config HSE : 8 MHz
+rcc.cr.HSEON = 1 # HSE oscillator ON
+while rcc.cr.HSERDY != 1 # wait HSE oscillator ready 
+
+
+# config SYSCLK : 72 MHz
+rcc.cfgr.PLLXTPRE = 0 # HSE clock not divided
+rcc.cfgr.PLLSRC = 1 # HSE oscillator clock selected as PLL input clock
+rcc.cfgr.PLLMUL = 0b0111 # multiplication factor 9
+rcc.cr.PLLON = 1 # PLL ON
+while rcc.cr.PLLRDY != 1 # wait PLL ready
+
+# config USBCLK : 48 MHz
+rcc.cfgr.USBPRE = 0 #  PLL clock is divided by 1.5 for USB 
+ 
+# selected PLL as system clock
+rcc.cfgr.SW = 0b10 
+while rcc.cfgr.SWS != 0b10 # wait PLL used as system clock
+
+# config HCLK : 72 MHz
+rcc.cfgr.HPRE = 1 #  SYSCLK not divided for HCLK
+
+# config PCLK1 : 36 MHz
+rcc.cfgr.PPRE1 = 0b100 # HCLK divided by 2 for PCLK1
+
+# config PCLK2 : 72 MHz
+rcc.cfgr.PPRE2 = 0 # HCLK divided by 2 for PCLK1
+
+rcc.apb1enr.PWREN = 1 
+
+
+# set processor clock as clock source
+systick.csr.CLKSOURCE = 1
+
+ 
+# enable SysTick Exception
+systick.csr.TICKINT = 1
+
+# enable counter
+systick.csr.ENABLE = 1
+
+# 0.1ms = 7200 clock circle
+systick.rvr.RELOAD = 7200

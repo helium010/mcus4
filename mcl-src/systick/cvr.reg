@@ -1,0 +1,5 @@
+address 0xE000E018
+
+name SysTick Current Value Register
+
+field CURRENT 23:0 rw

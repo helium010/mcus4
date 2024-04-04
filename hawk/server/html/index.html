@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hawk</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js" charset="utf-8"></script>
+    <style type="text/css">
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id='plot'></div>
+
+    <script>
+
+        axios.get('/data').then(res => {
+            console.log(res);
+
+
+            var data = [
+                {
+                    x: res.data.x,
+                    y: res.data.y
+                }
+
+            ];
+
+            var layout = {
+                title: 'Voltage',
+                showlegend: false
+            };
+
+            Plotly.newPlot('plot', data, layout, { scrollZoom: true });
+        });
+
+    </script>
+</body>
+
+</html>

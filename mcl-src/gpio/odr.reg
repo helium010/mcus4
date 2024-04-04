@@ -1,0 +1,43 @@
+name Port output data register
+
+address 0x40010800 + 0x0C
+
+address 0x40010C00 + 0x0C
+
+address 0x40011000 + 0x0C
+
+address 0x40011400 + 0x0C
+
+type rw
+
+field ODR15 15
+
+field ODR14 14
+
+field ODR13 13
+
+field ODR12 12
+
+field ODR11 11
+
+field ODR10 10
+
+field ODR9 9
+
+field ODR8 8
+
+field ODR7 7
+
+field ODR6 6
+
+field ODR5 5
+
+field ODR4 4
+
+field ODR3 3
+
+field ODR2 2
+
+field ODR1 1
+
+field ODR0 0

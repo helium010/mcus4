@@ -1,0 +1,30 @@
+init {
+
+    # enable clock
+    rcc.apb1enr.I2C1EN = 1
+    rcc.apb2enr.AFIOEN = 1 # enable Alternate function I/O clock
+    rcc.apb2enr.IOPBEN = 1 # enable GPIOB clock
+
+    gpio.crl[1].CNF6 = 0b11 # Output 50 MHz
+    gpio.crl[1].CNF7 = 0b11 
+
+    gpio.crl[1].MODE6 = 0b11 #  Alternate function output Open-drain
+    gpio.crl[1].MODE7 = 0b11
+
+    # enable interrupts
+    nvic.iser0.I2C1_EV = 1
+    nvic.ipr7.I2C1_EV = 3
+
+    i2c.cr2.ITBUFEN = 1
+    i2c.cr2.ITEVTEN = 1
+
+    # config clock frequency
+    i2c.cr2.FREQ = 36
+    i2c.ccr.CCR = 180
+    i2c.trise.TRISE = 36
+
+    # enable peripheral
+    i2c.cr1.PE = 1
+
+
+} 

@@ -1,0 +1,7 @@
+name NVIC_IPR4
+
+address 0xE000E400 + 0x10
+
+type rw
+
+field ADC1_2 23:20

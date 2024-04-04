@@ -1,0 +1,25 @@
+name USB interrupt status register
+
+address 0x40005C00 + 0x44
+
+type rc_w0
+
+field CTR 15 r
+
+field PMAOVRM 14 
+
+field ERR 13 
+
+field WKUP 12
+
+field SUSP 11
+
+field RESET 10 
+
+field SOF 9
+
+field ESOF 8
+
+field DIR 4 r
+
+field EP_ID 3:0 r

@@ -1,0 +1,43 @@
+name Port input data register
+
+address 0x40010800 + 0x08
+
+address 0x40010C00 + 0x08
+
+address 0x40011000 + 0x08
+
+address 0x40011400 + 0x08
+
+type r
+
+field IDR15 15
+
+field IDR14 14
+
+field IDR13 13
+
+field IDR12 12
+
+field IDR11 11
+
+field IDR10 10
+
+field IDR9 9
+
+field IDR8 8
+
+field IDR7 7
+
+field IDR6 6
+
+field IDR5 5
+
+field IDR4 4
+
+field IDR3 3
+
+field IDR2 2
+
+field IDR1 1
+
+field IDR0 0

@@ -1,0 +1,6 @@
+name Transmission byte count n
+
+address 0x40006000 : 0x10 : 3
+
+field ADDRn_TX 15:0 rw
+

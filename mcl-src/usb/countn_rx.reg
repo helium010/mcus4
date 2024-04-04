@@ -1,0 +1,10 @@
+name Reception byte count n
+
+address 0x40006000 + 12 : 0x10 : 3
+
+field BLSIZE 15 rw
+
+field NUM_BLOCK 14:10 rw
+
+field COUNTn_RX 9:0 r
+

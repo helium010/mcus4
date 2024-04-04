@@ -1,0 +1,119 @@
+init {
+    rcc.apb2enr.IOPAEN = 1 # enable GPIOA clock
+
+    gpio.crl[0].MODE1 = 0b11
+    gpio.crl[0].CNF1 = 0b00
+
+    switch_on() 
+} 
+
+var cache : uints = 1000uints 
+var current_length :uint = 0 
+
+fun start_capture() {
+    current_length = 0
+}
+
+var switch_off_tick : uint = 0
+
+export fun on_cmd(value:byte) {
+    if value == 0 {
+        switch_off()
+
+    } elif value == 1 {
+        switch_on()
+        
+    } elif value == 2 {
+        usb.program.make_response(adc.program.av)
+        
+    } elif value == 3 {
+        start_capture()
+        idle = false
+        switch_off_tick = systick.time.sys_tick_ms + 10
+
+    } elif value == 4 {
+
+        if current_length < 1000 {
+            usb.program.make_response(0)
+        } else {
+            usb.program.make_response(1)
+        }
+
+    } elif value == 5 { 
+
+        if transferring or current_length < 1000 { 
+            # do nothing
+            return
+
+        } else {
+            current_pos = 0
+            transferring = true
+            prepare_IN_data()
+        }
+    }
+}
+
+var current_pos : uint = 0
+var transferring : bool = false
+
+export fun after_usb_IN_transfer() {
+
+    if transferring {
+        prepare_IN_data()
+    }
+
+}
+
+
+fun prepare_IN_data(){
+    if current_pos >= 1000 {
+        transferring = false
+        return
+    }
+    
+    var end: uint = 1000
+
+    if 1000 - current_pos > 32 {
+        end = current_pos + 32
+    }
+    
+    var i : uint = 0
+    while current_pos < end {
+        usb.program.ep1_IN_cache[i] = cache[current_pos]
+        i += 1
+        current_pos += 1
+    }
+
+    usb.countn_tx[1].COUNTn_TX = i * 2
+    usb.epnr[1].STAT_TX = 0b11 # VALID
+
+}
+
+var idle : bool = true
+
+export fun after_adc_convert(value:uint) {
+    if idle { 
+        return 
+    }
+
+    if current_length < 1000 {
+        cache[current_length] = value
+        current_length += 1
+    } else {
+        idle = true
+    }
+
+    if switch_off_tick < systick.time.sys_tick_ms {
+        switch_off()
+    }
+}
+
+
+
+export fun switch_off(){
+    gpio.bsrr[0].BR1 = 1 
+}
+
+export fun switch_on() {
+    gpio.bsrr[0].BS1 = 1
+}

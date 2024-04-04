@@ -1,0 +1,9 @@
+name USB device address
+
+address 0x40005C00 + 0x4C
+
+type rw
+
+field EF 7 
+
+field ADD 6:0

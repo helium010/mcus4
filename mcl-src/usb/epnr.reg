@@ -1,0 +1,26 @@
+name USB endpoint n register
+
+
+address 0x40005C00 : 4 : 3
+
+type t
+ 
+field CTR_RX 15 rc_w0
+ 
+field DTOG_RX 14 
+
+field STAT_RX 13:12  
+
+field SETUP 11 r
+
+field EP_TYPE 10:9 rw
+
+field EP_KIND 8 rw
+
+field CTR_TX 7 rc_w0
+
+field DTOG_TX 6
+
+field STAT_TX 5:4
+
+field EA 3:0 rw

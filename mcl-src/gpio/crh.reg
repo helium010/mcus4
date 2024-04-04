@@ -1,0 +1,44 @@
+name Port configuration register high
+
+address 0x40010800 + 0x04
+
+address 0x40010C00 + 0x04
+
+address 0x40011000 + 0x04
+
+address 0x40011400 + 0x04
+
+type rw
+
+field CNF15 31:30
+
+field CNF14 27:26
+
+field CNF13 23:22
+
+field CNF12 19:18
+
+field CNF11 15:14
+
+field CNF10 11:10
+
+field CNF9 7:6
+
+field CNF8 3:2
+
+
+field MODE15 29:28
+
+field MODE14 25:24
+
+field MODE13 21:20
+
+field MODE12 17:16
+
+field MODE11 13:12
+
+field MODE10 9:8
+
+field MODE9 5:4
+
+field MODE8 1:0

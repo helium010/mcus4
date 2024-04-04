@@ -1,0 +1,7 @@
+name NVIC_IPR7
+
+address 0xE000E400 + 0x1C
+
+type rw
+
+field I2C1_EV 31:28

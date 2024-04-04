@@ -1,0 +1,38 @@
+
+init {
+    rcc.apb2enr.IOPAEN = 1 # enable GPIOA clock
+    rcc.apb2enr.AFIOEN = 1 # enable Alternate function I/O clock
+
+    gpio.crh[2].MODE13 = 0b11 
+    gpio.crh[2].CNF13 = 0b00
+  
+    led_off() 
+  
+}  
+ 
+export var led_blink_internal : uint = 500
+ 
+export fun led_on(){
+    gpio.bsrr[2].BR13 = 1 
+}
+
+export fun led_off() {
+    gpio.bsrr[2].BS13 = 1
+}
+
+
+
+
+var next_toggle_time : uint = 0
+
+mainloop {
+
+    if systick.time.sys_tick_ms > next_toggle_time {
+        if gpio.odr[2].ODR13 == 1 {
+            gpio.bsrr[2].BR13 = 1 
+        } else {
+            gpio.bsrr[2].BS13 = 1
+        }
+        next_toggle_time += led_blink_internal
+    }
+} 

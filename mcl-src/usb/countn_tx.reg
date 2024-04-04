@@ -1,0 +1,6 @@
+name Transmission byte count n
+
+address 0x40006000 + 4 : 0x10 : 3
+
+field COUNTn_TX 9:0 rw
+

@@ -1,0 +1,62 @@
+init {
+
+    # enable GPIOC clock
+    rcc.apb2enr.IOPCEN = 1 
+
+    # set GPIOA0 to analog mode
+    gpio.crl[0].CNF0 = 0 
+
+    # PCLK2 divided by 8 for ADC
+    rcc.cfgr.ADCPRE = 0b11 
+
+    # enable ADC clock
+    rcc.apb2enr.ADC1EN = 1
+
+    # enable End of Conversion interrupt
+    adc.cr1.EOCIE = 1
+    nvic.iser0.ADC1_2 = 1
+    nvic.ipr4.ADC1_2 = 2 
+
+    # single conversion mode 
+    adc.cr2.CONT = 0
+
+    # power on 
+    adc.cr2.ADON = 1
+
+    systick.time.delay_ms(1)
+
+    adc.cr2.CAL = 1
+
+    while adc.cr2.CAL == 1
+
+    # start conversion
+    adc.cr2.ADON = 1
+}
+
+export var av : uint = 0
+
+
+var adc_idle : bool = true
+
+
+export fun on_cmd(value : byte) {
+    
+}
+
+export fun on_every_100us(tus:uint) {
+    if adc_idle {
+        adc.sqr3.SQ1 = 0
+        adc.cr2.ADON = 1
+        adc_idle = false
+    }
+}
+
+interrupt ADC1_2_IRQHandler() {
+
+    # av = (av * 9 + adc.dr.DATA)  / 10
+    av = adc.dr.DATA
+
+    rctest.program.after_adc_convert(av)
+
+    adc_idle = true
+}

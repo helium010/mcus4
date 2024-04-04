@@ -1,0 +1,5 @@
+name I2C Data register
+
+address 0x40005400 + 0x10
+
+field DR 7:0 rw

@@ -1,0 +1,13 @@
+name SysTick Control and Status Register
+
+address 0xE000E010
+ 
+type rw
+
+field COUNTFLAG 16 r
+
+field CLKSOURCE 2 
+
+field TICKINT 1
+
+field ENABLE 0 

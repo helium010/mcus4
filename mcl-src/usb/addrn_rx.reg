@@ -1,0 +1,6 @@
+name Reception buffer address n
+
+address 0x40006000 + 8 : 0x10 : 3
+
+field ADDRn_RX 15:0 rw
+

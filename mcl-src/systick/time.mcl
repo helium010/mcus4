@@ -1,0 +1,29 @@
+export var sys_tick_ms : uint = 0
+
+
+ 
+export fun delay_ms(millisecond : uint) {
+    if millisecond == 1 {  
+        millisecond = 2
+    }
+ 
+    millisecond += sys_tick_ms 
+    while millisecond > sys_tick_ms
+}   
+
+var tick_100us : uint = 0
+
+interrupt SysTick_Handler() { 
+    tick_100us += 1
+    sys_tick_ms = tick_100us / 10
+
+    adc.program.on_every_100us(tick_100us)
+}
+
+init { 
+
+
+
+ 
+}
+

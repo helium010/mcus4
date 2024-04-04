@@ -1,0 +1,7 @@
+name I2C Clock control register
+
+address 0x40005400 + 0x1C
+
+type rw
+
+field CCR 11:0

@@ -1,0 +1,25 @@
+name Clock control register
+
+address 0x40021000
+
+type rw 
+
+field PLLRDY 25 r
+
+field PLLON 24 
+
+field CSSON 19 
+
+field HSEBYP 18 
+
+field HSERDY 17 r
+
+field HSEON 16 
+
+field HSICAL 15:8 r
+
+field HSITRIM 4:0 
+
+field HSIRDY 1 r
+
+field HSION 0 

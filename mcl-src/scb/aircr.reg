@@ -1,0 +1,15 @@
+name Application Interrupt and Reset Control Register
+
+address 0xE000ED0C 
+
+field VECTKEYSTAT 31:16 rw always-write-as=0x05FA
+
+field ENDIANNESS 15 r 
+
+field PRIGROUP 10:8 rw
+
+field SYSRESETREQ 2 w
+
+field VECTCLRACTIVE 1 w
+
+field VECTRESET 0 w

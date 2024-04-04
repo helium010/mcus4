@@ -1,0 +1,15 @@
+name USB control register
+
+address 0x40005C00 + 0x40
+
+type rw
+
+field CTRM 15
+
+
+
+field RESETM 10
+
+field PDWN 1
+
+field FRES 0

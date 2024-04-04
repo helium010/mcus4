@@ -1,0 +1,314 @@
+
+init {
+    # enable USB clock
+    rcc.apb1enr.USBEN = 1
+
+    # enable AFIO clock
+    rcc.apb2enr.AFIOEN = 1
+    # enable GPIOA clock
+    rcc.apb2enr.IOPAEN = 1 
+
+    gpio.crh[0].MODE10 = 0b11 
+    gpio.crh[0].CNF10 = 0b00
+
+    gpio.crh[0].MODE11 = 0b11 
+    gpio.crh[0].CNF11 = 0b00
+
+    gpio.crh[0].MODE12 = 0b11 
+    gpio.crh[0].CNF12 = 0b00
+
+    gpio.bsrr[0].BR10 = 1
+    gpio.bsrr[0].BR11 = 1
+    gpio.bsrr[0].BR12 = 1
+
+    systick.time.delay_ms(500)
+
+    gpio.crh[0].CNF11 = 0b11
+    gpio.crh[0].CNF12 = 0b11
+
+
+    # enable interrupt USB_LP_CAN1_RX0_IRQn
+    nvic.iser0.USB_LP_CAN1_RX0 = 1
+    nvic.ipr5.USB_LP_CAN1_RX0 = 1
+
+
+    usb.cntr.PDWN = 1
+
+    usb.cntr.FRES = 1
+
+    usb.cntr.PDWN = 0
+
+    usb.cntr.FRES = 0
+
+    usb.cntr.CTRM = 1
+    usb.cntr.RESETM = 1
+     
+ 
+
+    gpio.bsrr[0].BS10 = 1
+
+}
+
+interrupt USB_LP_CAN1_RX0_IRQHandler() {
+
+    if usb.istr.RESET == 1 {
+        reset()
+    }
+    if usb.istr.CTR == 1 {
+        if usb.istr.EP_ID == 0 {
+            on_ep0_ctr()
+        } elif usb.istr.EP_ID == 1 {
+            on_ep1_ctr()
+        } else { 
+            system.error(4)
+        }
+    } 
+    
+}   
+ 
+var ep0_OUT_cache : bytes = 0x40006100memory128
+var ep0_IN_cache : uints = 0x40006080memory128
+
+
+
+fun reset(){
+    usb.istr.RESET = 0
+
+    reset_ep0()
+    reset_ep1()
+
+    usb.daddr.EF = 1
+
+}
+
+fun reset_ep0() {
+    usb.epnr[0].EP_TYPE = 0b01 # CONTROl
+
+    usb.addrn_tx[0].ADDRn_TX = 0x40
+    usb.countn_tx[0].COUNTn_TX = 0
+
+
+
+    usb.addrn_rx[0].ADDRn_RX = 0x80
+    usb.countn_rx[0].BLSIZE = 1
+    usb.countn_rx[0].NUM_BLOCK = 1
+
+    usb.epnr[0].STAT_TX = 0b10 # NAK
+    usb.epnr[0].DTOG_RX = 0
+    usb.epnr[0].STAT_RX = 0b11 # VALID
+
+    
+    usb.epnr[0].EA = 0 # set endpoint address to 0
+}
+
+var addr :byte = 0bt
+
+
+fun on_ep0_ctr() {
+    if usb.epnr[0].CTR_RX == 1 {
+
+        if usb.epnr[0].SETUP == 1{
+
+            
+
+            var bRequest :byte = ep0_OUT_cache[1]
+
+            # 5 : SET_ADDRESS
+            if bRequest == 5 {
+                addr = ep0_OUT_cache[4]
+ 
+                
+                usb.epnr[0].STAT_RX = 0b10 
+                usb.countn_tx[0].COUNTn_TX = 0 
+                usb.epnr[0].STAT_TX = 0b11 # VALID
+
+            # 6 : GET_DESCRIPTOR
+            } elif bRequest == 6 {
+
+                var desc_type : byte = ep0_OUT_cache[5]
+                # var desc_index : byte = ep0_OUT_cache[4]
+                var desc_len : byte = ep0_OUT_cache[12]
+
+                # 1 : DEVICE
+                if desc_type == 1 {
+
+                    copy_data_to_peripheral_cache(device_descriptor, ep0_IN_cache, desc_len)
+
+                    usb.epnr[0].STAT_RX = 0b10 
+                    usb.countn_tx[0].COUNTn_TX = desc_len
+                    usb.epnr[0].STAT_TX = 0b11 # VALID
+                
+                # 2 : CONFIGURATION
+                } elif desc_type == 2 {
+
+                    copy_data_to_peripheral_cache(configuration_descriptor, ep0_IN_cache, desc_len)
+
+                    usb.epnr[0].STAT_RX = 0b10 
+                    usb.countn_tx[0].COUNTn_TX = desc_len
+                    usb.epnr[0].STAT_TX = 0b11 # VALID
+
+                } else {
+                    
+                }
+
+            # 9 : SET_CONFIGURATION
+            } elif bRequest == 9 {
+
+                usb.epnr[0].STAT_RX = 0b10 
+                usb.countn_tx[0].COUNTn_TX = 0 
+                usb.epnr[0].STAT_TX = 0b11 # VALID
+
+            } else {
+                # system.error()
+            }
+ 
+        } 
+
+        usb.epnr[0].CTR_RX = 0
+    }
+
+    if usb.epnr[0].CTR_TX == 1 {
+        if addr != 0bt {
+            usb.daddr.ADD = addr
+            addr = 0bt
+        }
+
+        usb.epnr[0].STAT_RX = 0b11
+        usb.epnr[0].CTR_TX = 0
+    }
+
+}
+
+
+var device_descriptor : bytes = {
+    18bt,           # bLength: 18
+    1bt,            # bDescriptorType: 0x01 (DEVICE)
+    0bt, 2bt,       # bcdUSB: 0x0200
+    0bt,            # bDeviceClass: Device (0x00)
+    0bt,            # bDeviceSubClass: 0
+    0bt,            # bDeviceProtocol: 0 (Use class code info from Interface Descriptors)
+    64bt,           # bMaxPacketSize0: 64,
+    0x5abt, 0x45bt, # idVendor: 0x455a ( EZ )
+    0x5abt, 0x45bt, # idProduct: 0x455a ( EZ )
+    0bt, 1bt,       # bcdDevice: 0x0100
+    0bt,            # iManufacturer: 0
+    0bt,            # iProduct: 0 
+    0bt,            # iSerialNumber: 0
+    1bt,            # bNumConfigurations: 1 
+}
+
+var configuration_descriptor : bytes = {
+    9bt,            # bLength
+    2bt,            # bDescriptorType: 0x02 (CONFIGURATION)
+    32bt, 0bt,      # wTotalLength: 32
+    1bt,            # bNumInterfaces: 1
+    1bt,            # bConfigurationValue: 1
+    0bt,            # iConfiguration: 0
+    0b10000000bt,   # Configuration bmAttributes: 0x80  NOT SELF-POWERED  NO REMOTE-WAKEUP
+    50bt,           # bMaxPower: 50  (100mA)
+
+    # INTERFACE DESCRIPTOR (0.0): class Vendor Specific
+    9bt,            # bLength: 9
+    4bt,            # bDescriptorType: 0x04 (INTERFACE)
+    0bt,            # bInterfaceNumber: 0
+    0bt,            # bAlternateSetting: 0
+    2bt,            # bNumEndpoints: 2
+    0xffbt,         # bInterfaceClass: Vendor Specific (0xff)
+    0xffbt,         # bInterfaceSubClass: 0xff
+    0xffbt,         # bInterfaceProtocol: 0xff
+    0bt,            # iInterface: 0
+    
+    # ENDPOINT DESCRIPTOR
+    7bt,            # bLength: 7
+    5bt,            # bDescriptorType: 0x05 (ENDPOINT)
+    0x81bt,         # bEndpointAddress: 0x81  IN  Endpoint:1
+    0b00000010bt,   # .... ..10 = Transfertype: Bulk-Transfer (0x2)
+    64bt,0bt,       # wMaxPacketSize: 64
+    0bt,            # bInterval: 0
+
+    
+    7bt,            # bLength: 7
+    5bt,            # bDescriptorType: 0x05 (ENDPOINT)
+    0x01bt,         # bEndpointAddress: 0x01  OUT  Endpoint:2
+    0b00000010bt,   # .... ..10 = Transfertype: Bulk-Transfer (0x2)
+    64bt,0bt,       # wMaxPacketSize: 64
+    0bt,            # bInterval: 0
+
+}
+
+
+
+  
+fun copy_data_to_peripheral_cache(from : bytes, to: uints, len:byte) {
+    var i :uint = 0
+    while i * 2 < len {
+        to[i] = from[i * 2] + from[i * 2 + 1] * 256
+        i += 1
+    }
+} 
+
+# pragma ep1 bulk
+
+var ep1_OUT_cache : bytes = 0x40006200memory128
+export var ep1_IN_cache : uints = 0x40006180memory128
+
+fun reset_ep1() {
+    # setup ep1
+    usb.epnr[1].EP_TYPE = 0b00 # BULK
+    usb.epnr[1].EA = 1 # set endpoint address to 1
+
+    # OUT : RX
+    usb.addrn_rx[1].ADDRn_RX = 0x100
+    usb.countn_rx[1].BLSIZE = 1
+    usb.countn_rx[1].NUM_BLOCK = 1
+    usb.epnr[1].STAT_RX = 0b11 # VALID
+
+    # IN : TX
+    usb.addrn_tx[1].ADDRn_TX = 0xC0
+    usb.countn_tx[1].COUNTn_TX = 0
+    usb.epnr[1].STAT_TX = 0b11 # VALID
+
+}
+
+
+
+fun on_ep1_ctr() {
+
+    # OUT : RX
+    if usb.epnr[1].CTR_RX == 1 {
+        usb.epnr[1].CTR_RX = 0
+
+        var cmd : byte = ep1_OUT_cache[0]
+        var value: byte = ep1_OUT_cache[1]
+
+        if cmd == 0 {
+            adc.program.on_cmd(value)
+        } elif cmd == 1{
+            rctest.program.on_cmd(value)
+        }
+
+        usb.epnr[1].STAT_RX = 0b11 # VALID
+
+    }
+
+    # IN : TX
+    if usb.epnr[1].CTR_TX == 1 {
+        usb.epnr[1].CTR_TX = 0
+
+        usb.countn_tx[1].COUNTn_TX = 0
+
+        rctest.program.after_usb_IN_transfer()
+        
+        usb.epnr[1].STAT_TX = 0b11 # VALID
+    }
+
+}
+
+
+export fun make_response(res:uint) {
+
+    ep1_IN_cache[0] = res
+
+    usb.countn_tx[1].COUNTn_TX = 2
+    usb.epnr[1].STAT_TX = 0b11 # VALID
+}

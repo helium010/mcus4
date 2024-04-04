@@ -1,0 +1,11 @@
+name Interrupt Set-enable Registers
+
+address 0xE000E100 
+
+type rw
+
+field ADC1_2 18
+
+field USB_LP_CAN1_RX0 20
+
+field I2C1_EV 31

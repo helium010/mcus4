@@ -1,0 +1,13 @@
+name APB1 peripheral clock enable register
+
+
+address 0x4002101c
+
+type rw
+
+field PWREN 28
+
+
+field USBEN 23
+
+field I2C1EN 21

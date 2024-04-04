@@ -1,0 +1,22 @@
+name 2C Status register 1
+
+address 0x40005400 + 0x14
+
+type r
+
+
+field AF 10
+
+field ARLO 9
+
+field BERR 8
+
+field TxE 7
+
+field RxNE 6
+
+field BTF 2
+
+field ADDR 1
+
+field SB 0

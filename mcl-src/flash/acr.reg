@@ -1,0 +1,17 @@
+name Flash access control register
+
+address 0x40022000
+
+
+
+type rw
+
+field PRFTBS 5 r
+
+field PRFTBE 4
+
+field HLFCYA 3
+
+field LATENCY 2:0
+
+

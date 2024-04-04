@@ -1,0 +1,13 @@
+name I2C Control register 2
+
+address 0x40005400 + 0x04
+
+type rw
+
+field ITBUFEN 10
+
+field ITEVTEN 9
+
+field FREQ 5:0
+
+

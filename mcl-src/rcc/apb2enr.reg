@@ -1,0 +1,15 @@
+name APB2 peripheral clock enable register
+
+address 0x40021000 + 0x18
+
+type rw
+
+field ADC1EN 9
+
+field IOPCEN 4
+
+field IOPBEN 3
+
+field IOPAEN 2
+
+field AFIOEN 0

@@ -1,0 +1,12 @@
+name ADC control register 2
+
+address 0x40012400 + 0x08
+
+
+type rw
+
+field CAL 2
+
+field CONT 1
+
+field ADON 0

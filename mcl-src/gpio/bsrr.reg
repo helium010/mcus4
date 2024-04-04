@@ -1,0 +1,45 @@
+name Port bit set/reset register
+
+address 0x40010800 + 0x10
+
+address 0x40010C00 + 0x10
+
+address 0x40011000 + 0x10
+
+address 0x40011400 + 0x10
+
+type w
+
+field BR15 31
+field BR14 30
+field BR13 29 
+field BR12 28
+field BR11 27
+field BR10 26
+field BR9 25
+field BR8 24
+field BR7 23
+field BR6 22
+field BR5 21
+field BR4 20
+field BR3 19
+field BR2 18
+field BR1 17
+field BR0 16
+
+field BS15 15
+field BS14 14
+field BS13 13
+field BS12 12
+field BS11 11
+field BS10 10
+field BS9 9
+field BS8 8
+field BS7 7
+field BS6 6
+field BS5 5
+field BS4 4
+field BS3 3
+field BS2 2
+field BS1 1
+field BS0 0

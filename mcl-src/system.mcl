@@ -1,0 +1,18 @@
+var is_error : bool = false
+
+export var debug_code : uint = 0
+export var error_code : uint = 0
+
+export fun error(code:uint) {
+    while true {
+        systick.time.delay_ms(100)
+        gpio.io.led_on()
+        systick.time.delay_ms(100)
+        gpio.io.led_off()
+    }
+
+}
+
+mainloop { 
+
+}

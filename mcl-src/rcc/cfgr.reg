@@ -1,0 +1,27 @@
+name Clock configuration register
+
+address 0x40021000 + 0x04
+
+type rw
+
+field MCO 26:24
+
+field USBPRE 22
+
+field PLLMUL 21:18
+
+field PLLXTPRE 17
+
+field PLLSRC 16
+
+field ADCPRE 15:14
+
+field PPRE2 13:11
+
+field PPRE1 10:8
+
+field HPRE 7:4
+
+field SWS 3:2
+
+field SW 1:0
